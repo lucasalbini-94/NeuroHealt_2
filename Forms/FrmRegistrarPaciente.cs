@@ -31,7 +31,7 @@ namespace NeuroHealthDesktop.Forms
         private void ConfigurarEstadoInicial()
         {
             // TODO: Definir estado inicial del formulario.
-            cmbTipoPaciente.SelectedItem = TipoPaciente.Guardia;
+            cmbTipoPaciente.SelectedItem = TipoPaciente.Pediatrico;
         }
 
         private void cmbTipoPaciente_SelectedIndexChanged(object sender, EventArgs e)
@@ -46,111 +46,58 @@ namespace NeuroHealthDesktop.Forms
             if (!ValidarCampos())
                 return;
 
+            Paciente nuevo;
+
+            //Precargar datos del paciente
+
             long dni = long.Parse(txtDni.Text);
             string nombreApellido = txtNombreApellido.Text;
             int edad = (int)nudEdad.Value;
             MotivoConsulta motivo = (MotivoConsulta)cmbMotivo.SelectedItem;
+            int pulso = (int)nudPulso.Value;
+            double temperatura = (double)nudTemperatura.Value;
+            string presion = txtPresion.Text;
+            int saturacion = (int)nudSaturacion.Value;
+            int dolor = (int)nudDolor.Value;
+            bool resultadoCamilla;
+            string adultoResponsable;
 
             // ACÁ NO TOMA LOS DATOS DEL FORMULARIO, CREA UN PACIENTE DE PRUEBA
             if (cmbTipoPaciente.Text == "Guardia")
             {
-                // VALIDA Y TRANSFORMACIONS DE LOS DATOS DE LOS CAMPOS DEL FORMULARIO
-
-                //bool resultadoDni = long.TryParse(txtDni.Text, out long dni);
-
-                // Esto siempre es decimal y dentro del rango elegido, NO HACE FALTA validarlo
-                //int edad = (int)nudEdad.Value;
-
-                // Convierte el motivo elegido en el valor del enum de motivo de consulta
-                // Siempre lo puede hacer porque estan cargados los valores del enum en el comboBox
-
-                //bool resultadoMotivo = Enum.TryParse(cmbMotivo.Text, out MotivoConsulta motivo);
-
                 // PASAR EL VALOR DEL CHECKOBX A BOOLEANO
-                bool resultadoCamilla = chkRequiereCamilla.Checked;
+                resultadoCamilla = chkRequiereCamilla.Checked;
 
-                PacienteGuardia nuevoPaciente = new PacienteGuardia(dni,
-                                                                    txtNombreApellido.Text,
-                                                                    edad,
-                                                                    motivo,
-                                                                    new SignosVitales(1, 130, "85", 90, 38),
-                                                                    resultadoCamilla);
-                servicioPacientes.RegistrarPaciente(nuevoPaciente);
+                nuevo = new PacienteGuardia(dni,
+                    nombreApellido,
+                    edad,
+                    motivo,
+                    new SignosVitales(
+                        pulso,
+                        temperatura,
+                        presion,
+                        saturacion,
+                        dolor),
+                    resultadoCamilla);
             }
             else
             {
-                // VALIDA Y TRANSFORMACIONS DE LOS DATOS DE LOS CAMPOS DEL FORMULARIO
-                // VALIDACION DEL DNI, QUE SOLO TENGA NUMEROS Y NO ESTE VACIO
-                bool soloDigitos = txtDni.Text.Replace(" ", "").All(char.IsDigit);
+                adultoResponsable = txtAdultoResponsable.Text;
 
-                if (!soloDigitos)
-                {
-                    MessageBox.Show("El DNI solo puede contener números.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txtDni.Clear();
-                    return;
-                }
-
-                if (txtDni.Text.Replace(" ", "") == "")
-                {
-                    MessageBox.Show("El DNI no puede estar vacío.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                bool resultadoDni = long.TryParse(txtDni.Text, out long dni);
-
-                // VALIDACION DEL NOMBRE Y APELLIDO, QUE SOLO TENGA LETRAS Y NO ESTE VACIO
-                bool soloLetras = txtNombreApellido.Text.Replace(" ", "").All(char.IsLetter);
-                // Si hay algún caracter que no va o el campo esta vacio, muestra el mensaje de error
-                if (!soloLetras)
-                {
-                    MessageBox.Show("El NOMBRE Y APELLIDO solo puede contener letras.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txtNombreApellido.Clear();
-                    return;
-                }
-                if (txtNombreApellido.Text.Replace(" ", "") == "")
-                {
-                    MessageBox.Show("El NOMBRE Y APELLIDO no puede estar vacío.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // Esto siempre es decimal y dentro del rango elegido, NO HACE FALTA validarlo
-                int edad = (int)nudEdad.Value;
-
-                // Convierte el motivo elegido en el valor del enum de motivo de consulta
-                // Siempre lo puede hacer porque estan cargados los valores del enum en el comboBox
-
-
-                bool resultadoMotivo = Enum.TryParse(cmbMotivo.Text, out MotivoConsulta motivo);
-
-                if (!resultadoMotivo)
-                {
-                    MessageBox.Show("El MOTIVO no puede estar vacio.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // VALIDACION DEL NOMBRE Y APELLIDO, QUE SOLO TENGA LETRAS Y NO ESTE VACIO
-                bool soloLetrasAdulto = txtAdultoResponsable.Text.Replace(" ", "").All(char.IsLetter);
-                // Si hay algún caracter que no va o el campo esta vacio, muestra el mensaje de error
-                if (!soloLetrasAdulto)
-                {
-                    MessageBox.Show("El NOMBRE Y APELLIDO DEL ADULTO RESPONSABLE solo puede contener letras.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    txtAdultoResponsable.Clear();
-                    return;
-                }
-                if (txtAdultoResponsable.Text.Replace(" ", "") == "")
-                {
-                    MessageBox.Show("El NOMBRE Y APELLIDO DEL ADULTO RESPONSABLE no puede estar vacío.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                PacientePediatrico nuevoPaciente = new PacientePediatrico(dni,
-                                                    txtNombreApellido.Text,
-                                                    edad,
-                                                    motivo,
-                                                    new SignosVitales(1, 130, "85", 90, 38),
-                                                    txtAdultoResponsable.Text);
-                servicioPacientes.RegistrarPaciente(nuevoPaciente);
+                nuevo = new PacientePediatrico(dni,
+                    nombreApellido,
+                    edad,
+                    motivo,
+                    new SignosVitales(
+                        pulso,
+                        temperatura,
+                        presion,
+                        saturacion,
+                        dolor),
+                    adultoResponsable);
             }
+
+            servicioPacientes.RegistrarPaciente(nuevo);
 
             this.Close();
 
@@ -173,24 +120,37 @@ namespace NeuroHealthDesktop.Forms
             Close();
         }
 
+        private void nudEdad_ValueChanged(object sender, EventArgs e)
+        {
+            if (nudEdad.Value < 18)
+            {
+                cmbTipoPaciente.SelectedItem = TipoPaciente.Pediatrico;
+                txtAdultoResponsable.Enabled = true;
+            }
+            else
+            {
+                cmbTipoPaciente.SelectedItem = TipoPaciente.Guardia;
+                txtAdultoResponsable.Enabled = false;
+            }
+        }
+
         private bool ValidarCampos()
         {
             // VALIDACION DEL DNI, QUE SOLO TENGA NUMEROS Y NO ESTE VACIO
-            bool soloDigitos = txtDni.Text.Replace(" ", "").All(char.IsDigit);
-            bool vacio = txtDni.Text.Replace(" ", "") == "";
 
-            if (!soloDigitos)
+            if (txtDni.Text.Replace(" ", "").All(char.IsDigit))
             {
                 MessageBox.Show("El DNI solo puede contener números.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtDni.Clear();
                 return false;
             }
-            if (vacio)
+            if (txtDni.Text.Replace(" ", "") == "")
             {
                 MessageBox.Show("El DNI no puede estar vacío.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-            // VALIDACION DEL NOMBRE Y APELLIDO, QUE SOLO TENGA LETRAS Y NO ESTE VACIO
+
+            // VALIDACION DEL NOMBRE Y APELLIDO y PRESION, QUE SOLO TENGA LETRAS Y NO ESTE VACIO
             bool soloLetras = txtNombreApellido.Text.Replace(" ", "").All(char.IsLetter);
             // Si hay algún caracter que no va o el campo esta vacio, muestra el mensaje de error
             if (!soloLetras)
@@ -207,6 +167,17 @@ namespace NeuroHealthDesktop.Forms
             if (cmbMotivo.Text == "")
             {
                 MessageBox.Show("El MOTIVO no puede estar vacio.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            if (txtPresion.Text.Replace(" ", "") == "")
+            {
+                MessageBox.Show("La PRESION no puede estar vacia.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            if (txtPresion.Text.Replace(" ", "").All(char.IsDigit))
+            {
+                MessageBox.Show("La PRESION solo puede contener números.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtPresion.Clear();
                 return false;
             }
             return true;

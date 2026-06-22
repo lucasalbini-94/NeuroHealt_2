@@ -234,6 +234,7 @@
             nudEdad.Size = new Size(120, 23);
             nudEdad.TabIndex = 7;
             nudEdad.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            nudEdad.ValueChanged += nudEdad_ValueChanged;
             // 
             // nudPulso
             // 
@@ -285,6 +286,7 @@
             // cmbTipoPaciente
             // 
             cmbTipoPaciente.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbTipoPaciente.Enabled = false;
             cmbTipoPaciente.Items.AddRange(new object[] { "Guardia", "Peatrico" });
             cmbTipoPaciente.Location = new Point(190, 225);
             cmbTipoPaciente.Name = "cmbTipoPaciente";
