@@ -181,7 +181,7 @@ namespace NeuroHealthDesktop.Forms
                 txtPresion.Clear();
                 return false;
             }
-            // SI EL CAMPO ADULTO RESPONSABLE ESTA HABILITADO, VE QUE NO ESTÉ VACIO
+            // SI EL CAMPO ADULTO RESPONSABLE ESTA HABILITADO, VE QUE NO ESTÉ VACIO Y QUE SEAN SOLO LETRAS
             if (txtAdultoResponsable.Enabled)
             {
                 // Repetí el codigo para validar el nombre del paciente, pero para el adulto responsable. Se podria hacer una funcion

@@ -1,6 +1,7 @@
 ﻿using NeuroHealthDesktop.Repositorios;
 using NeuroHealthDesktop.Servicios;
 using System;
+using System.Diagnostics.Eventing.Reader;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
@@ -69,16 +70,28 @@ namespace NeuroHealthDesktop.Forms
             dgvColaEspera.Rows.Clear();
             // Agrega todos los pacientes
             foreach (var paciente in servicioPacientes.ObtenerPacientesAdmitidos())
+            if (paciente.Nivel == NivelUrgencia.SinEvaluar)
             {
                 dgvColaEspera.Rows.Add(
                     paciente.Dni,
                     paciente.NombreApellido,
                     paciente.Edad,
                     paciente.Motivo,
-                    "",
+                    paciente.Signos.Dolor,
                     paciente.Tipo
                 );
             }
+                else
+                {
+                    dgvPacientesAdmitidos.Rows.Add(
+                    paciente.Dni,
+                    paciente.NombreApellido,
+                    paciente.Edad,
+                    paciente.Motivo,
+                    paciente.Nivel,
+                    paciente.Tipo
+                );
+                }
         }
 
         private async void btnEvaluarPaciente_Click(object sender, EventArgs e)
@@ -97,12 +110,39 @@ namespace NeuroHealthDesktop.Forms
             progressBarEvaluacion.Visible = false;
             btnEvaluarPaciente.Enabled = true;
             lblEstado.Text = "Evaluación pendiente de implementar.";
+
+            foreach (var paciente in servicioPacientes.ObtenerPacientesAdmitidos())
+            {
+                if (paciente.Signos.Saturacion < 90 &&
+                    paciente.Signos.Pulso > 120 &&
+                    paciente.Signos.Temperatura >= 39.0 &&
+                    paciente.Signos.Dolor >= 9)
+                {
+                    paciente.Nivel = NivelUrgencia.Rojo;
+                }
+                else if (paciente.Signos.Saturacion >= 90 && paciente.Signos.Saturacion <= 94 &&
+                    paciente.Signos.Pulso >= 100 && paciente.Signos.Pulso <= 120 &&
+                    paciente.Signos.Temperatura >= 38.0 && paciente.Signos.Temperatura <= 38.9 &&
+                    paciente.Signos.Dolor >= 6 && paciente.Signos.Dolor <= 8)
+                {
+                    paciente.Nivel = NivelUrgencia.Amarillo;
+                }
+                else
+                {
+                    paciente.Nivel = NivelUrgencia.Verde;
+                }
+                
+
+            }
+            ActualizarGrillas();
+
         }
 
         private void btnNuevoPaciente_Click(object sender, EventArgs e)
         {
             FrmRegistrarPaciente nuevoFormularioRegistro = new FrmRegistrarPaciente(servicioPacientes);
             nuevoFormularioRegistro.ShowDialog();
+            ActualizarGrillas();
         }
 
         private void btnObservaciones_Click(object sender, EventArgs e)
