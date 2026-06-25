@@ -70,7 +70,7 @@ namespace NeuroHealthDesktop.Forms
             dgvColaEspera.Rows.Clear();
             dgvPacientesAdmitidos.Rows.Clear();
             // Agrega todos los pacientes
-            foreach (var paciente in servicioPacientes.ObtenerPacientesAdmitidos())
+            foreach (var paciente in servicioPacientes.ObtenerTodos())
             if (paciente.Nivel == NivelUrgencia.SinEvaluar)
             {
                 dgvColaEspera.Rows.Add(

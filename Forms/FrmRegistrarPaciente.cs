@@ -46,68 +46,56 @@ namespace NeuroHealthDesktop.Forms
             if (!ValidarCampos())
                 return;
 
-            Paciente nuevo;
-
-            //Precargar datos del paciente
-
-            long dni = long.Parse(txtDni.Text);
-            string nombreApellido = txtNombreApellido.Text;
-            int edad = (int)nudEdad.Value;
-            MotivoConsulta motivo = (MotivoConsulta)cmbMotivo.SelectedItem;
-            int pulso = (int)nudPulso.Value;
-            double temperatura = (double)nudTemperatura.Value;
-            string presion = txtPresion.Text;
-            int saturacion = (int)nudSaturacion.Value;
-            int dolor = (int)nudDolor.Value;
-            bool resultadoCamilla;
-            string adultoResponsable;
-
-            // ACÁ NO TOMA LOS DATOS DEL FORMULARIO, CREA UN PACIENTE DE PRUEBA
-            if (cmbTipoPaciente.Text == "Guardia")
+            try
             {
-                // PASAR EL VALOR DEL CHECKOBX A BOOLEANO
-                resultadoCamilla = chkRequiereCamilla.Checked;
+                Paciente nuevo = CrearPacienteDesdeFormulario();
 
-                nuevo = new PacienteGuardia(dni,
-                    nombreApellido,
-                    edad,
-                    motivo,
-                    new SignosVitales(
-                        pulso,
-                        temperatura,
-                        presion,
-                        saturacion,
-                        dolor),
-                    resultadoCamilla);
+                ResultadoOperacion<Paciente> resultado = servicioPacientes.RegistrarPaciente(nuevo);
+
+                if (resultado.Exito)
+                {
+                    MessageBox.Show(resultado.Mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show(resultado.Mensaje, "Error de Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            else
+            catch (Exception ex)
             {
-
-                adultoResponsable = txtAdultoResponsable.Text;
-
-                nuevo = new PacientePediatrico(dni,
-                    nombreApellido,
-                    edad,
-                    motivo,
-                    new SignosVitales(
-                        pulso,
-                        temperatura,
-                        presion,
-                        saturacion,
-                        dolor),
-                    adultoResponsable);
+                MessageBox.Show($"Ocurrió un error al registrar el paciente: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-
-            servicioPacientes.RegistrarPaciente(nuevo);
-
-            this.Close();
-
         }
 
         private Paciente CrearPacienteDesdeFormulario()
         {
             // TODO: Leer datos y crear PacienteGuardia o PacientePediatrico.
-            throw new NotImplementedException("Completar creación del paciente desde el formulario.");
+            long dni = long.Parse(txtDni.Text.Trim());
+            string nombreApellido = txtNombreApellido.Text.Trim();
+            int edad = (int)nudEdad.Value;
+            MotivoConsulta motivo = (MotivoConsulta)cmbMotivo.SelectedItem;
+
+            int pulso = (int)nudPulso.Value;
+            double temperatura = (double)nudTemperatura.Value;
+            string presion = txtPresion.Text.Trim();
+            int saturacion = (int)nudSaturacion.Value;
+            int dolor = (int)nudDolor.Value;
+
+            SignosVitales signos = new SignosVitales(pulso, temperatura, presion, saturacion, dolor);
+
+            if (cmbTipoPaciente.Text == "Guardia")
+            {
+                bool requiereCamilla = chkRequiereCamilla.Checked;
+                return new PacienteGuardia(dni, nombreApellido, edad, motivo, signos, requiereCamilla);
+            }
+            else if (cmbTipoPaciente.Text == "Pediatría")
+            {
+                string adultoResponsable = txtAdultoResponsable.Text.Trim();
+                return new PacientePediatrico(dni, nombreApellido, edad, motivo, signos, adultoResponsable);
+            }
+
+            return null;
         }
 
         private long ObtenerDni()
