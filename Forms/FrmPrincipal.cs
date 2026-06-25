@@ -68,6 +68,7 @@ namespace NeuroHealthDesktop.Forms
         {
             // Borra todo antes porque sino agrega y duplica lo que ya puso
             dgvColaEspera.Rows.Clear();
+            dgvPacientesAdmitidos.Rows.Clear();
             // Agrega todos los pacientes
             foreach (var paciente in servicioPacientes.ObtenerPacientesAdmitidos())
             if (paciente.Nivel == NivelUrgencia.SinEvaluar)
