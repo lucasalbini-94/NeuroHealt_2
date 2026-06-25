@@ -22,7 +22,7 @@ namespace NeuroHealthDesktop.Repositorios
             // TODO: Agregar paciente al archivo.
             string? linea = ConvertirPacienteALinea(paciente);
 
-            using (StreamWriter sw = new StreamWriter(rutaArchivo))
+            using (StreamWriter sw = new StreamWriter(rutaArchivo, append: true))
             {
                 sw.WriteLine(linea);
             }
