@@ -82,6 +82,7 @@ namespace NeuroHealthDesktop.Forms
             }
             else
             {
+
                 adultoResponsable = txtAdultoResponsable.Text;
 
                 nuevo = new PacientePediatrico(dni,
@@ -138,7 +139,7 @@ namespace NeuroHealthDesktop.Forms
         {
             // VALIDACION DEL DNI, QUE SOLO TENGA NUMEROS Y NO ESTE VACIO
 
-            if (txtDni.Text.Replace(" ", "").All(char.IsDigit))
+            if (!txtDni.Text.Replace(" ", "").All(char.IsDigit))
             {
                 MessageBox.Show("El DNI solo puede contener números.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtDni.Clear();
@@ -179,6 +180,24 @@ namespace NeuroHealthDesktop.Forms
                 MessageBox.Show("La PRESION solo puede contener números.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtPresion.Clear();
                 return false;
+            }
+            // SI EL CAMPO ADULTO RESPONSABLE ESTA HABILITADO, VE QUE NO ESTÉ VACIO
+            if (txtAdultoResponsable.Enabled)
+            {
+                // Repetí el codigo para validar el nombre del paciente, pero para el adulto responsable. Se podria hacer una funcion
+                bool soloLetrasAdulto = txtAdultoResponsable.Text.Replace(" ", "").All(char.IsLetter);
+                // Si hay algún caracter que no va o el campo esta vacio, muestra el mensaje de error
+                if (!soloLetrasAdulto)
+                {
+                    MessageBox.Show("El NOMBRE DEL ADULTO RESPONSABLE solo puede contener letras.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtAdultoResponsable.Clear();
+                    return false;
+                }
+                if (txtAdultoResponsable.Text.Replace(" ", "") == "")
+                {
+                    MessageBox.Show("El NOMBRE DEL ADULTO RESPONSABLE no puede estar vacío.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
             }
             return true;
         }
