@@ -89,13 +89,11 @@ namespace NeuroHealthDesktop.Forms
                 bool requiereCamilla = chkRequiereCamilla.Checked;
                 return new PacienteGuardia(dni, nombreApellido, edad, motivo, signos, requiereCamilla);
             }
-            else if (cmbTipoPaciente.Text == "Pediatría")
+            else
             {
                 string adultoResponsable = txtAdultoResponsable.Text.Trim();
                 return new PacientePediatrico(dni, nombreApellido, edad, motivo, signos, adultoResponsable);
             }
-
-            return null;
         }
 
         private long ObtenerDni()

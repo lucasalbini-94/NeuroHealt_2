@@ -45,55 +45,56 @@ namespace NeuroHealthDesktop.Servicios
 
         public ResultadoOperacion<Paciente> RegistrarPaciente(Paciente paciente)
         {
-            if (paciente.Dni <= 0)
-            {
-                return ResultadoOperacion<Paciente>.Error("El DNI del paciente debe ser un número positivo.");
-            }
-            if (paciente.Edad <= 0)
-            {
-                return ResultadoOperacion<Paciente>.Error("La edad debe ser mayor a 0.");
-            }
-            if (string.IsNullOrWhiteSpace(paciente.NombreApellido))
-            {
-                return ResultadoOperacion<Paciente>.Error("El nombre y apellido no puede estar vacío.");
-            }
-            if (paciente is PacientePediatrico pp && string.IsNullOrWhiteSpace(pp.AdultoResponsable))
-            {
-                return ResultadoOperacion<Paciente>.Error("El paciente pediátrico debe tener un adulto responsable.");
-            }
-            if (paciente.Signos.Pulso < 30 || paciente.Signos.Pulso > 200)
-            {
-                return ResultadoOperacion<Paciente>.Error("El pulso debe estar entre 30 y 200.");
-            }
-            if (paciente.Signos.Temperatura < 34 || paciente.Signos.Temperatura > 42)
-            {
-                return ResultadoOperacion<Paciente>.Error("La temperatura debe estar entre 34 y 42 grados Celsius.");
-            }
-            if (paciente.Signos.Saturacion < 70 || paciente.Signos.Saturacion > 100)
-            {
-                return ResultadoOperacion<Paciente>.Error("La saturación debe estar entre 70 y 100.");
-            }
-            if (paciente.Signos.Dolor < 0 || paciente.Signos.Dolor > 10)
-            {
-                return ResultadoOperacion<Paciente>.Error("El nivel de dolor debe estar entre 0 y 10.");
-            }
+                if (paciente.Dni <= 0)
+                {
+                    return ResultadoOperacion<Paciente>.Error("El DNI del paciente debe ser un número positivo.");
+                }
+                if (paciente.Edad <= 0)
+                {
+                    return ResultadoOperacion<Paciente>.Error("La edad debe ser mayor a 0.");
+                }
+                if (string.IsNullOrWhiteSpace(paciente.NombreApellido))
+                {
+                    return ResultadoOperacion<Paciente>.Error("El nombre y apellido no puede estar vacío.");
+                }
+                if (paciente is PacientePediatrico pp && string.IsNullOrWhiteSpace(pp.AdultoResponsable))
+                {
+                    return ResultadoOperacion<Paciente>.Error("El paciente pediátrico debe tener un adulto responsable.");
+                }
+                if (paciente.Signos.Pulso < 30 || paciente.Signos.Pulso > 200)
+                {
+                    return ResultadoOperacion<Paciente>.Error("El pulso debe estar entre 30 y 200.");
+                }
+                if (paciente.Signos.Temperatura < 34 || paciente.Signos.Temperatura > 42)
+                {
+                    return ResultadoOperacion<Paciente>.Error("La temperatura debe estar entre 34 y 42 grados Celsius.");
+                }
+                if (paciente.Signos.Saturacion < 70 || paciente.Signos.Saturacion > 100)
+                {
+                    return ResultadoOperacion<Paciente>.Error("La saturación debe estar entre 70 y 100.");
+                }
+                if (paciente.Signos.Dolor < 0 || paciente.Signos.Dolor > 10)
+                {
+                    return ResultadoOperacion<Paciente>.Error("El nivel de dolor debe estar entre 0 y 10.");
+                }
 
-            if (repositorioPacientes.ExisteDni(paciente.Dni))
-            {
-                return ResultadoOperacion<Paciente>.Error("Ya existe un paciente con el mismo DNI.");
-            }
-            paciente.Nivel = NivelUrgencia.SinEvaluar;
-
-            try
-            {
-                repositorioPacientes.Agregar(paciente);
-                colaEspera.Enqueue(paciente);
-                return ResultadoOperacion<Paciente>.Correcto("Paciente registrado correctamente.", paciente);
-            }
-            catch (Exception ex)
-            {
-                return ResultadoOperacion<Paciente>.Error($"Error al registrar paciente: {ex.Message}");
-            }
+                if (repositorioPacientes.ExisteDni(paciente.Dni))
+                {
+                    return ResultadoOperacion<Paciente>.Error("Ya existe un paciente con el mismo DNI.");
+                }
+                paciente.Nivel = NivelUrgencia.SinEvaluar;
+            
+                try
+                {
+                    repositorioPacientes.Agregar(paciente);
+                    colaEspera.Enqueue(paciente);
+                    return ResultadoOperacion<Paciente>.Correcto("Paciente registrado correctamente.", paciente);
+                }
+                catch (Exception ex)
+                {
+                    return ResultadoOperacion<Paciente>.Error($"Error al registrar paciente: {ex.Message}");
+                }
+            
         }
 
         public List<Paciente> ObtenerColaEspera()
