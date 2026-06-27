@@ -62,7 +62,7 @@
             lblTitulo.Name = "lblTitulo";
             lblTitulo.Size = new Size(256, 30);
             lblTitulo.TabIndex = 0;
-            lblTitulo.Text = "Estadísticas - Esqueleto";
+            lblTitulo.Text = "Estadísticas";
             // 
             // lblAyuda
             // 
@@ -71,7 +71,7 @@
             lblAyuda.Name = "lblAyuda";
             lblAyuda.Size = new Size(392, 15);
             lblAyuda.TabIndex = 1;
-            lblAyuda.Text = "Aquí se mostrarán los indicadores calculados por el servicio de pacientes.";
+            lblAyuda.Text = "Realizadas a partir de los datos de todos los pacientes ingresados.";
             // 
             // lblEnEspera
             // 
@@ -212,7 +212,7 @@
             btnActualizar.Name = "btnActualizar";
             btnActualizar.Size = new Size(160, 38);
             btnActualizar.TabIndex = 16;
-            btnActualizar.Text = "Aquí puede ir: Actualizar";
+            btnActualizar.Text = "Actualizar";
             btnActualizar.UseVisualStyleBackColor = true;
             btnActualizar.Click += btnActualizar_Click;
             // 

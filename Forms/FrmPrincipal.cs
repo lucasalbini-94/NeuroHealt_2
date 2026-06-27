@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.WebRequestMethods;
 
 namespace NeuroHealthDesktop.Forms
 {
@@ -71,17 +72,17 @@ namespace NeuroHealthDesktop.Forms
             dgvPacientesAdmitidos.Rows.Clear();
             // Agrega todos los pacientes
             foreach (var paciente in servicioPacientes.ObtenerTodos())
-            if (paciente.Nivel == NivelUrgencia.SinEvaluar)
-            {
-                dgvColaEspera.Rows.Add(
-                    paciente.Dni,
-                    paciente.NombreApellido,
-                    paciente.Edad,
-                    paciente.Motivo,
-                    paciente.Signos.Dolor,
-                    paciente.Tipo
-                );
-            }
+                if (paciente.Nivel == NivelUrgencia.SinEvaluar)
+                {
+                    dgvColaEspera.Rows.Add(
+                        paciente.Dni,
+                        paciente.NombreApellido,
+                        paciente.Edad,
+                        paciente.Motivo,
+                        paciente.Signos.Dolor,
+                        paciente.Tipo
+                    );
+                }
                 else
                 {
                     dgvPacientesAdmitidos.Rows.Add(
@@ -93,7 +94,37 @@ namespace NeuroHealthDesktop.Forms
                     paciente.Tipo
                 );
                 }
+
+            // CAMBIA DEL NOMBRE AL COLOR EN NIVEL DE URGENCIA
+            if (dgvPacientesAdmitidos != null && dgvPacientesAdmitidos.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow fila in dgvPacientesAdmitidos.Rows)
+                {
+                    if (fila.Cells["Urgencia"].Value != null)
+                    {
+                        string nivel = fila.Cells["Urgencia"].Value.ToString();
+
+                        if (nivel == "Rojo")
+                        {
+                            fila.Cells["Urgencia"].Style.BackColor = Color.Red;
+                            fila.Cells["Urgencia"].Value = "";
+                        }
+                        else if (nivel == "Amarillo")
+                        {
+                            fila.Cells["Urgencia"].Style.BackColor = Color.Yellow;
+                            fila.Cells["Urgencia"].Value = "";
+                        }
+                        else if (nivel == "Verde")
+                        {
+                            fila.Cells["Urgencia"].Style.BackColor = Color.Green;
+                            fila.Cells["Urgencia"].Value = "";
+                        }
+                    }
+                }
+
+            }
         }
+    
 
         private async void btnEvaluarPaciente_Click(object sender, EventArgs e)
         {
@@ -110,31 +141,8 @@ namespace NeuroHealthDesktop.Forms
 
             progressBarEvaluacion.Visible = false;
             btnEvaluarPaciente.Enabled = true;
-            lblEstado.Text = "Evaluación pendiente de implementar.";
 
-            foreach (var paciente in servicioPacientes.ObtenerPacientesAdmitidos())
-            {
-                if (paciente.Signos.Saturacion < 90 &&
-                    paciente.Signos.Pulso > 120 &&
-                    paciente.Signos.Temperatura >= 39.0 &&
-                    paciente.Signos.Dolor >= 9)
-                {
-                    paciente.Nivel = NivelUrgencia.Rojo;
-                }
-                else if (paciente.Signos.Saturacion >= 90 && paciente.Signos.Saturacion <= 94 &&
-                    paciente.Signos.Pulso >= 100 && paciente.Signos.Pulso <= 120 &&
-                    paciente.Signos.Temperatura >= 38.0 && paciente.Signos.Temperatura <= 38.9 &&
-                    paciente.Signos.Dolor >= 6 && paciente.Signos.Dolor <= 8)
-                {
-                    paciente.Nivel = NivelUrgencia.Amarillo;
-                }
-                else
-                {
-                    paciente.Nivel = NivelUrgencia.Verde;
-                }
-                
-
-            }
+            var resultado = servicioPacientes.EvaluarSiguientePaciente();
             ActualizarGrillas();
 
         }
@@ -153,7 +161,8 @@ namespace NeuroHealthDesktop.Forms
 
         private void btnEstadisticas_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Aquí se abrirá el formulario de estadísticas.");
+            FrmEstadisticas nuevoFormularioEstadistica = new FrmEstadisticas(servicioPacientes);
+            nuevoFormularioEstadistica.ShowDialog();
         }
 
         private void btnActualizar_Click(object sender, EventArgs e)

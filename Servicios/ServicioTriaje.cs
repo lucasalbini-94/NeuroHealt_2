@@ -11,12 +11,17 @@
             int dolor = signos.Dolor;
 
             if (saturacion < 90 || pulso > 120 || temperatura >= 39.0 || dolor >= 9)
+            {
                 return NivelUrgencia.Rojo;
+            }
             if (saturacion < 94 || pulso > 100 || temperatura >= 38.0 || dolor >= 6)
+            {
                 return NivelUrgencia.Amarillo;
-
-            // Debe devolver Rojo, Amarillo o Verde según los signos vitales.
-            return NivelUrgencia.Verde;
+            }
+            else
+            {
+                return NivelUrgencia.Verde;
+            }
         }
 
         private bool EsRojo(SignosVitales signos)
