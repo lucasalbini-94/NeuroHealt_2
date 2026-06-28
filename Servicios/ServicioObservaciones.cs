@@ -23,9 +23,16 @@ namespace NeuroHealthDesktop.Servicios
                 return ResultadoOperacion<Observacion>.Error("El texto de la observación no puede estar vacío.");
             }
 
-            if (repositorioPacientes.ExisteDni(dniPaciente) == false)
+            Paciente? paciente = repositorioPacientes.BuscarPorDni(dniPaciente);
+
+            if (paciente == null)
             {
                 return ResultadoOperacion<Observacion>.Error("No se encontró ningún paciente con el DNI " + dniPaciente);
+            }
+
+            if (paciente.Nivel == NivelUrgencia.SinEvaluar)
+            {
+                return ResultadoOperacion<Observacion>.Error("Solo se pueden registrar observaciones para pacientes evaluados");
             }
 
             try
@@ -45,29 +52,13 @@ namespace NeuroHealthDesktop.Servicios
         {
             // TODO: Obtener observaciones por DNI y ordenarlas.
 
-            if (repositorioPacientes.ExisteDni(dniPaciente) == false)
+            if (!repositorioPacientes.ExisteDni(dniPaciente))
             {
                 return new List<Observacion>();
             }
 
-            // Solución infalible al error CS1061: Usamos ObtenerTodas() que sabemos que existe en la interfaz,
-            // y filtramos los elementos manualmente por el DNI del paciente.
-            var todosLosDatos = repositorioObservaciones.ObtenerTodas();
-            if (todosLosDatos == null)
-            {
-                return new List<Observacion>();
-            }
-
-            List<Observacion> listaFiltrada = new List<Observacion>();
-            foreach (var elemento in todosLosDatos)
-            {
-                // Modifica "DniPaciente" si la propiedad en tu clase Observacion se llama de otra forma (ej. Dni)
-                if (elemento != null && elemento.DniPaciente == dniPaciente)
-                {
-                    listaFiltrada.Add(elemento);
-                }
-            }
-
+            List<Observacion> listaFiltrada = repositorioObservaciones.ObtenerPorDniPaciente(dniPaciente);
+            
             // Invertimos la lista manualmente para que queden de más nuevas a más viejas
             List<Observacion> listaOrdenada = new List<Observacion>();
             for (int i = listaFiltrada.Count - 1; i >= 0; i--)

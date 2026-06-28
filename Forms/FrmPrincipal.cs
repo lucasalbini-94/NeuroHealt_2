@@ -70,69 +70,50 @@ namespace NeuroHealthDesktop.Forms
             // Borra todo antes porque sino agrega y duplica lo que ya puso
             dgvColaEspera.Rows.Clear();
             dgvPacientesAdmitidos.Rows.Clear();
+
             // Agrega todos los pacientes
-            foreach (var paciente in servicioPacientes.ObtenerTodos())
-                if (paciente.Nivel == NivelUrgencia.SinEvaluar)
-                {
-                    dgvColaEspera.Rows.Add(
-                        paciente.Dni,
-                        paciente.NombreApellido,
-                        paciente.Edad,
-                        paciente.Motivo,
-                        paciente.Signos.Dolor,
-                        paciente.Tipo
-                    );
-                }
-                else
-                {
-                    dgvPacientesAdmitidos.Rows.Add(
-                    paciente.Dni,
-                    paciente.NombreApellido,
-                    paciente.Edad,
-                    paciente.Motivo,
-                    paciente.Nivel,
-                    paciente.Tipo
-                );
-                }
+            List<Paciente> pacientesEnEspera = servicioPacientes.ObtenerColaEspera();
 
-            // CAMBIA DEL NOMBRE AL COLOR EN NIVEL DE URGENCIA
-            if (dgvPacientesAdmitidos != null && dgvPacientesAdmitidos.Rows.Count > 0)
+            foreach (Paciente p in pacientesEnEspera)
             {
-                foreach (DataGridViewRow fila in dgvPacientesAdmitidos.Rows)
-                {
-                    if (fila.Cells["Urgencia"].Value != null)
-                    {
-                        string nivel = fila.Cells["Urgencia"].Value.ToString();
+                dgvColaEspera.Rows.Add(
+                    p.Dni,
+                    p.NombreApellido,
+                    p.Edad,
+                    p.Motivo,
+                    "Sin Evaluar",
+                    p is PacienteGuardia ? "Guardia" : "Pediátrico"
+                );
+            }
 
-                        if (nivel == "Rojo")
-                        {
-                            fila.Cells["Urgencia"].Style.BackColor = Color.Red;
-                            fila.Cells["Urgencia"].Value = "";
-                        }
-                        else if (nivel == "Amarillo")
-                        {
-                            fila.Cells["Urgencia"].Style.BackColor = Color.Yellow;
-                            fila.Cells["Urgencia"].Value = "";
-                        }
-                        else if (nivel == "Verde")
-                        {
-                            fila.Cells["Urgencia"].Style.BackColor = Color.Green;
-                            fila.Cells["Urgencia"].Value = "";
-                        }
-                    }
-                }
+            List<Paciente> pacientesAdmitidos = servicioPacientes.ObtenerPacientesAdmitidos();
 
+            foreach (Paciente p in pacientesAdmitidos)
+            {
+                dgvPacientesAdmitidos.Rows.Add(
+                    p.Dni,
+                    p.NombreApellido,
+                    p.Edad,
+                    p.Motivo,
+                    p.Nivel.ToString(),
+                    p is PacienteGuardia ? "Guardia" : "Pediátrico");
             }
         }
 
 
         private async void btnEvaluarPaciente_Click(object sender, EventArgs e)
         {
+            if ( servicioPacientes.ContarEnEspera() == 0)
+            {
+                MessageBox.Show("No hay pacientes en la cola de espera.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             // Fragmento orientativo provisto para simular tarea en segundo plano.
             btnEvaluarPaciente.Enabled = false;
             progressBarEvaluacion.Visible = true;
             progressBarEvaluacion.Style = ProgressBarStyle.Marquee;
-            lblEstado.Text = "Aquí se evaluará el siguiente paciente.";
+            lblEstado.Text = "Evaluando";
 
             await Task.Run(() =>
             {
@@ -143,6 +124,7 @@ namespace NeuroHealthDesktop.Forms
             btnEvaluarPaciente.Enabled = true;
 
             var resultado = servicioPacientes.EvaluarSiguientePaciente();
+            lblEstado.Text = resultado.Mensaje;
             ActualizarGrillas();
 
         }
@@ -163,10 +145,10 @@ namespace NeuroHealthDesktop.Forms
             }
 
             var fila = dgvPacientesAdmitidos.SelectedRows[0];
-            long dniPaciente = Convert.ToInt64(fila.Cells["DNI"].Value);
+            long dniPaciente = Convert.ToInt64(fila.Cells["Dni"].Value);
 
             // Pasa la instancia de servicioObservaciones al constructor
-            FrmObservaciones ventanaObs = new FrmObservaciones(servicioObservaciones);
+            FrmObservaciones ventanaObs = new FrmObservaciones(servicioObservaciones, dniPaciente);
             ventanaObs.ShowDialog();
         }
 
@@ -179,7 +161,6 @@ namespace NeuroHealthDesktop.Forms
         private void btnActualizar_Click(object sender, EventArgs e)
         {
             ActualizarGrillas();
-            lblEstado.Text = "Aquí se actualizarán los datos mostrados.";
         }
 
         private void btnSalir_Click(object sender, EventArgs e)
@@ -190,6 +171,27 @@ namespace NeuroHealthDesktop.Forms
         private void dgvPacientesAdmitidos_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             // TODO: Aplicar color según el nivel de urgencia.
+
+            if (dgvPacientesAdmitidos.Columns[e.ColumnIndex].Name == "Urgencia" && e.Value != null)
+            {
+                string? nivel = e.Value.ToString();
+
+                if (nivel == "Rojo")
+                {
+                    e.CellStyle.BackColor = Color.Red;
+                    e.Value = "";
+                }
+                else if (nivel == "Amarillo")
+                {
+                    e.CellStyle.BackColor = Color.Yellow;
+                    e.Value = "";
+                }
+                else if (nivel == "Verde")
+                {
+                    e.CellStyle.BackColor = Color.Green;
+                    e.Value = "";
+                }
+            }
         }
 
         private void lblTitulo_Click(object sender, EventArgs e)

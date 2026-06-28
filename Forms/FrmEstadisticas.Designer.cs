@@ -18,7 +18,6 @@
         private System.Windows.Forms.Label lblRojosValor;
         private System.Windows.Forms.Label lblEdadPromedioValor;
         private System.Windows.Forms.Label lblPorcentajeCriticosValor;
-        private System.Windows.Forms.Label lblAyuda;
         private System.Windows.Forms.Button btnActualizar;
         private System.Windows.Forms.Button btnCerrar;
 
@@ -35,7 +34,6 @@
         private void InitializeComponent()
         {
             lblTitulo = new Label();
-            lblAyuda = new Label();
             lblEnEspera = new Label();
             lblEnEsperaValor = new Label();
             lblAdmitidos = new Label();
@@ -60,18 +58,9 @@
             lblTitulo.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblTitulo.Location = new Point(22, 18);
             lblTitulo.Name = "lblTitulo";
-            lblTitulo.Size = new Size(256, 30);
+            lblTitulo.Size = new Size(134, 30);
             lblTitulo.TabIndex = 0;
             lblTitulo.Text = "Estadísticas";
-            // 
-            // lblAyuda
-            // 
-            lblAyuda.AutoSize = true;
-            lblAyuda.Location = new Point(25, 55);
-            lblAyuda.Name = "lblAyuda";
-            lblAyuda.Size = new Size(392, 15);
-            lblAyuda.TabIndex = 1;
-            lblAyuda.Text = "Realizadas a partir de los datos de todos los pacientes ingresados.";
             // 
             // lblEnEspera
             // 
@@ -232,7 +221,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(470, 435);
             Controls.Add(lblTitulo);
-            Controls.Add(lblAyuda);
             Controls.Add(lblEnEspera);
             Controls.Add(lblEnEsperaValor);
             Controls.Add(lblAdmitidos);

@@ -28,6 +28,7 @@ namespace NeuroHealthDesktop.Repositorios
 
             // Crea una nueva instancia asegurando que lleve el ID correcto
             Observacion observacionAGuardar = new Observacion(proximoId, observacion.DniPaciente, observacion.Texto);
+            observacionAGuardar.Fecha = DateTime.Now;
 
             // 2. Convertir el objeto a una línea de texto
             string linea = ConvertirObservacionALinea(observacionAGuardar);
@@ -104,7 +105,7 @@ namespace NeuroHealthDesktop.Repositorios
         private string ConvertirObservacionALinea(Observacion observacion)
         {
             // Convierte el objeto a formato: Id|DniPaciente|Texto
-            return $"{observacion.Id}|{observacion.DniPaciente}|{observacion.Texto}";
+            return $"{observacion.Id}|{observacion.DniPaciente}|{observacion.Fecha}|{observacion.Texto}";
         }
 
         private Observacion? ConvertirLineaAObservacion(string linea)
@@ -114,16 +115,20 @@ namespace NeuroHealthDesktop.Repositorios
                
                 string[] partes = linea.Split('|');
 
-                // Valida que tenga las 3 partes necesarias (Id, Dni, Texto)
-                if (partes.Length >= 3)
+                // Valida que tenga las 4 partes necesarias (Id, Dni, Fecha, Texto)
+                if (partes.Length >= 4)
                 {
                     int id = int.Parse(partes[0]);
                     long dni = long.Parse(partes[1]);
+                    DateTime fecha = DateTime.Parse(partes[2]);
 
                     // Vuelve a unir el texto por si la observación contenía caracteres '|' por error
-                    string texto = string.Join("|", partes, 2, partes.Length - 2);
+                    string texto = string.Join("|", partes, 3, partes.Length - 3);
 
-                    return new Observacion(id, dni, texto);
+                    Observacion observacion = new Observacion(id, dni, texto);
+                    observacion.Fecha = fecha;
+
+                    return observacion;
                 }
             }
             catch

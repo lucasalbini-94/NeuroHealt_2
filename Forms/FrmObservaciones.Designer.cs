@@ -153,6 +153,7 @@
             Name = "FrmObservaciones";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Observaciones";
+            Load += FrmObservaciones_Load;
             ResumeLayout(false);
             PerformLayout();
         }

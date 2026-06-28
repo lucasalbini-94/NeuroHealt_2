@@ -8,7 +8,6 @@
         private System.Windows.Forms.Label lblColaEspera;
         private System.Windows.Forms.Label lblPacientesAdmitidos;
         private System.Windows.Forms.Label lblEstado;
-        private System.Windows.Forms.Label lblAyudaPrincipal;
 
         private System.Windows.Forms.DataGridView dgvColaEspera;
         private System.Windows.Forms.DataGridView dgvPacientesAdmitidos;
@@ -37,7 +36,6 @@
             lblColaEspera = new Label();
             lblPacientesAdmitidos = new Label();
             lblEstado = new Label();
-            lblAyudaPrincipal = new Label();
             dgvColaEspera = new DataGridView();
             dgvPacientesAdmitidos = new DataGridView();
             btnNuevoPaciente = new Button();
@@ -91,15 +89,6 @@
             lblEstado.TabIndex = 13;
             lblEstado.Text = "Estado del sistema / mensajes.";
             // 
-            // lblAyudaPrincipal
-            // 
-            lblAyudaPrincipal.AutoSize = true;
-            lblAyudaPrincipal.Location = new Point(24, 58);
-            lblAyudaPrincipal.Name = "lblAyudaPrincipal";
-            lblAyudaPrincipal.Size = new Size(552, 15);
-            lblAyudaPrincipal.TabIndex = 1;
-            lblAyudaPrincipal.Text = "Pantalla principal. Aquí deberán conectarse los servicios, cargar grillas y resolver los eventos principales.";
-            // 
             // dgvColaEspera
             // 
             dgvColaEspera.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
@@ -119,6 +108,7 @@
             dgvPacientesAdmitidos.RowHeadersWidth = 62;
             dgvPacientesAdmitidos.Size = new Size(560, 210);
             dgvPacientesAdmitidos.TabIndex = 5;
+            dgvPacientesAdmitidos.CellFormatting += dgvPacientesAdmitidos_CellFormatting;
             // 
             // btnNuevoPaciente
             // 
@@ -204,7 +194,6 @@
             Controls.Add(lblPacientesAdmitidos);
             Controls.Add(dgvColaEspera);
             Controls.Add(lblColaEspera);
-            Controls.Add(lblAyudaPrincipal);
             Controls.Add(lblTitulo);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;

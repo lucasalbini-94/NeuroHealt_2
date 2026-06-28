@@ -14,7 +14,7 @@ namespace NeuroHealthDesktop.Repositorios
             {
                 Directory.CreateDirectory(carpetaArchivo);
             }
-            rutaArchivo = "pacientes.txt";
+            rutaArchivo = Path.Combine(carpetaArchivo, "pacientes.txt"); ;
         }
 
         public void Agregar(Paciente paciente)

@@ -7,11 +7,23 @@ namespace NeuroHealthDesktop.Forms
     public partial class FrmObservaciones : Form
     {
         private ServicioObservaciones servicioObservaciones;
+        private long dniSeleccionado;
 
-        public FrmObservaciones(ServicioObservaciones servicioObservaciones)
+        public FrmObservaciones(ServicioObservaciones servicioObservaciones, long dni = 0)
         {
             InitializeComponent();
             this.servicioObservaciones = servicioObservaciones;
+            dniSeleccionado = dni;
+        }
+        private void FrmObservaciones_Load(object sender, EventArgs e)
+        {
+            // Se cargan las observaciones del paciente si alguno fué seleccionado
+            if (dniSeleccionado > 0)
+            {
+                txtDni.Text = dniSeleccionado.ToString();
+
+                CargarObservaciones(dniSeleccionado);
+            }
         }
 
         private void btnAgregar_Click(object sender, EventArgs e)
@@ -29,17 +41,21 @@ namespace NeuroHealthDesktop.Forms
                 return;
             }
 
+
             try
             {
-               
-               
-                servicioObservaciones.AgregarObservacion(dni, textoObservacion);
+                ResultadoOperacion<Observacion> resultado = servicioObservaciones.AgregarObservacion(dni, textoObservacion);
 
-                MessageBox.Show("Observación agregada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                
-                txtObservacion.Clear();
-                CargarObservaciones(dni);
+                if (resultado.Exito)
+                {
+                    MessageBox.Show("Observación agregada con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    txtObservacion.Clear();
+                    CargarObservaciones(dni);
+                }
+                else
+                {
+                    MessageBox.Show(resultado.Mensaje, "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {
@@ -62,7 +78,7 @@ namespace NeuroHealthDesktop.Forms
 
             try
             {
-                
+
                 var lista = servicioObservaciones.ObtenerObservacionesPorPaciente(dni);
 
                 if (lista == null || lista.Count == 0)
@@ -84,7 +100,7 @@ namespace NeuroHealthDesktop.Forms
 
         private long ObtenerDni()
         {
-            
+
             string inputDni = txtDni.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(inputDni))
@@ -112,5 +128,6 @@ namespace NeuroHealthDesktop.Forms
         {
             // Este método quedó vacío por un doble clic accidental.
         }
+
     }
 }
