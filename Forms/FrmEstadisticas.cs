@@ -23,8 +23,8 @@ namespace NeuroHealthDesktop.Forms
             lblVerdesValor.Text = servicioPacientes.ContarPorNivel(NivelUrgencia.Verde).ToString();
             lblAmarillosValor.Text = servicioPacientes.ContarPorNivel(NivelUrgencia.Amarillo).ToString();
             lblRojosValor.Text = servicioPacientes.ContarPorNivel(NivelUrgencia.Rojo).ToString();
-            lblEdadPromedioValor.Text = servicioPacientes.CalcularEdadPromedioAdmitidos().ToString();
-            lblPorcentajeCriticosValor.Text = $"{servicioPacientes.CalcularPorcentajeCriticos().ToString()}%";
+            lblEdadPromedioValor.Text = servicioPacientes.CalcularEdadPromedioAdmitidos().ToString("0");
+            lblPorcentajeCriticosValor.Text = $"{servicioPacientes.CalcularPorcentajeCriticos().ToString("0.00")}%";
         }
 
         private void btnActualizar_Click(object sender, EventArgs e)

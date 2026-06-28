@@ -7,7 +7,6 @@
         private Label lblDni;
         private Label lblObservacion;
         private Label lblListado;
-        private Label lblAyuda;
         private TextBox txtDni;
         private TextBox txtObservacion;
         private Button btnBuscar;
@@ -27,7 +26,6 @@
             lblDni = new Label();
             lblObservacion = new Label();
             lblListado = new Label();
-            lblAyuda = new Label();
             txtDni = new TextBox();
             txtObservacion = new TextBox();
             btnBuscar = new Button();
@@ -73,15 +71,6 @@
             lblListado.Size = new Size(139, 15);
             lblListado.TabIndex = 8;
             lblListado.Text = "Listado de observaciones";
-            // 
-            // lblAyuda
-            // 
-            lblAyuda.AutoSize = true;
-            lblAyuda.Location = new Point(24, 55);
-            lblAyuda.Name = "lblAyuda";
-            lblAyuda.Size = new Size(365, 15);
-            lblAyuda.TabIndex = 1;
-            lblAyuda.Text = "Aquí se deberá buscar un paciente, cargar y listar sus observaciones.";
             // 
             // txtDni
             // 
@@ -138,7 +127,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(870, 515);
             Controls.Add(lblTitulo);
-            Controls.Add(lblAyuda);
             Controls.Add(lblDni);
             Controls.Add(txtDni);
             Controls.Add(btnBuscar);

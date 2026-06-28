@@ -16,7 +16,6 @@
         private System.Windows.Forms.Label lblDolor;
         private System.Windows.Forms.Label lblTipoPaciente;
         private System.Windows.Forms.Label lblAdultoResponsable;
-        private System.Windows.Forms.Label lblAyuda;
         private System.Windows.Forms.TextBox txtDni;
         private System.Windows.Forms.TextBox txtNombreApellido;
         private System.Windows.Forms.TextBox txtPresion;
@@ -56,7 +55,6 @@
             lblDolor = new Label();
             lblTipoPaciente = new Label();
             lblAdultoResponsable = new Label();
-            lblAyuda = new Label();
             txtDni = new TextBox();
             txtNombreApellido = new TextBox();
             txtPresion = new TextBox();
@@ -186,15 +184,6 @@
             lblAdultoResponsable.Size = new Size(109, 15);
             lblAdultoResponsable.TabIndex = 13;
             lblAdultoResponsable.Text = "Adulto responsable";
-            // 
-            // lblAyuda
-            // 
-            lblAyuda.AutoSize = true;
-            lblAyuda.Location = new Point(25, 55);
-            lblAyuda.Name = "lblAyuda";
-            lblAyuda.Size = new Size(608, 15);
-            lblAyuda.TabIndex = 1;
-            lblAyuda.Text = "Formulario base. Aquí los alumnos deberán completar validaciones, carga de datos y creación del objeto paciente.";
             // 
             // txtDni
             // 
@@ -331,7 +320,6 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(910, 370);
             Controls.Add(lblTitulo);
-            Controls.Add(lblAyuda);
             Controls.Add(lblDni);
             Controls.Add(txtDni);
             Controls.Add(lblNombreApellido);
